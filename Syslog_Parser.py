@@ -1,6 +1,7 @@
 """
 Date            Ver No.     Author      History
 01/29/2018      V0.1        Scott Yang  First version
+02/02/2018      V0.2        Scott Yang  Fix bugs
 
 """
 
@@ -16,9 +17,9 @@ from threading import Thread
 
 #Re-arrangment the data frame
 arrange = ["Time", "UeContextId", "CellId", "SC", "Syslog Statement"]
+
 table = {}
 log_list = []
-
 write_path = os.getcwd()
 
 def browse_button():
@@ -41,6 +42,11 @@ def write_file(data, write_path, UEID):  # This funcation is to save the ouptut 
     except PermissionError:
         print("Oops! Please check the output .xlsx is close")
         status.insert(END, "Oops! Please make sure the output .xlsx are close..." + '\n')
+    #Close file and clear list and table before next run
+    writer.close()
+    del log_list[:]
+    table.clear()
+    
 
 
 def addTable(string):
@@ -69,7 +75,7 @@ def addTable(string):
 def syslog_parser():
     #Prepare serach pattern from the GUI input
     UEID = UEID_value.get()
-    pattern = "(ueContextId:{}|UeId:{})".format(UEID,UEID)
+    pattern = "(ueContextId:{} |UeId:{} )".format(UEID,UEID)
     mp = re.compile(pattern)
 
     print("Start Parsing....")
